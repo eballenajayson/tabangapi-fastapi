@@ -26,8 +26,8 @@ def get_db():
         db.close()
 
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+def root():
+    return {"status": "Congratulations! Your backend is running 🚀"}
 
 
 @app.post("/api/v1/register", response_model=schemas.UserResponse)
