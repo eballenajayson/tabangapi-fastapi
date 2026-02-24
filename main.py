@@ -35,6 +35,7 @@ def root():
 def login(
     username: str = Body(...),
     password: str = Body(...),
+    loggedInAs: str = Body(...),
     db: Session = Depends(get_db),
 ):
     # Find user by username
@@ -42,6 +43,10 @@ def login(
 
     if not user or user.password != password:
         raise HTTPException(status_code=401, detail="Invalid username or password")
+
+    user.loggedInAs = loggedInAs
+    db.commit()
+    db.refresh(user)
 
     return user
 
