@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, File, UploadFile, Form
+from fastapi import FastAPI, Depends, HTTPException, File, UploadFile, Form, Body
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 import models, schemas
@@ -29,6 +29,21 @@ def get_db():
 @app.get("/")
 def root():
     return {"status": "Congratulations! Your backend is running 🚀"}
+
+
+@app.post("/api/v1/login", response_model=schemas.UserResponse)
+def login(
+    username: str = Body(...),
+    password: str = Body(...),
+    db: Session = Depends(get_db),
+):
+    # Find user by username
+    user = db.query(models.User).filter(models.User.username == username).first()
+
+    if not user or user.password != password:
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+
+    return user
 
 
 @app.post("/api/v1/register", response_model=schemas.UserResponse)
