@@ -25,6 +25,7 @@ def get_db():
     finally:
         db.close()
 
+
 @app.get("/")
 def root():
     return {"status": "Congratulations! Your backend is running 🚀"}
@@ -101,3 +102,14 @@ def get_reports(db: Session = Depends(get_db)):
 @app.get("/api/v1/users/{user_id}/reports", response_model=list[schemas.ReportResponse])
 def get_reports_by_user(user_id: int, db: Session = Depends(get_db)):
     return db.query(models.Report).filter(models.Report.userId == user_id).all()
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 8000)),
+        reload=False,
+    )
